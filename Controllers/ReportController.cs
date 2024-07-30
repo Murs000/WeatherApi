@@ -11,20 +11,19 @@ namespace WeatherApi.Controllers;
 
 [ApiController]
 [Route("[controller]")]
-public class ReportController(WeatherService service) : ControllerBase
+public class ReportController(WeatherService service,IServiceUnitOfWork serviceUnitOfWork) : ControllerBase
 {
     [HttpGet]
     public ActionResult<List<ReportModel>> GetReports([FromQuery] ReportFilter filter, [FromQuery] Pagination pagination)
     {
-        return Ok(service.Filter(filter,pagination));
+        return Ok(serviceUnitOfWork.ReportService.Filter(filter,pagination));
     }
     [HttpPost]
     public IActionResult WeatherCheck([FromBody] DistrictModel model)
     {
         var weather = service.GetWeather(model.Lat, model.Lon);
 
-        weather.DisctrictId = model.Id;
-        weather.DateTime = DateTime.Now.ToUniversalTime();
+        serviceUnitOfWork.ReportService.Insert(weather,model.Id);
 
         return Ok(weather);
     }

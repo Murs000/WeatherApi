@@ -48,6 +48,7 @@ void RegisterServices(IServiceCollection services)
     });
 
     services.AddTransient<WeatherService>();
+    services.AddTransient<IServiceUnitOfWork, ServiceUnitOfWork>();
 
     builder.Services.AddHttpClient<WeatherService>("Report", client =>
 {
